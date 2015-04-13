@@ -20,6 +20,9 @@ $RECYCLE.BIN/
 # Windows Directories
 .idea/
 
+# Other
+*.mp3
+
 # =========================
 # Operating System Files
 # =========================
