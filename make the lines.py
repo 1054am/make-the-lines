@@ -3,11 +3,12 @@ import echonest.remix.audio as audio
 from echonest.remix.support.ffmpeg import ffmpeg
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import wave
 from scipy.io.wavfile import read
 import sys
 
-filename = "lest2.mp3"
+filename = "05.mp3"
 af = audio.LocalAudioFile(filename)
 tats = af.analysis.tatums
 tats_range = []
@@ -22,24 +23,10 @@ for i in tats_range:
 
 print tats_range
 
-if af.filename.lower().endswith(".wav") and (af.sampleRate, af.numChannels) == (44100, 2):
-    file_to_read = af.filename
-elif af.convertedfile:
-    file_to_read = af.convertedfile
-else:
-    temp_file_handle, af.convertedfile = tempfile.mkstemp(".wav")
-    af.sampleRate, af.numChannels = ffmpeg(af.filename, af.convertedfile, overwrite=True,
-            numChannels=af.numChannels, sampleRate=af.sampleRate, verbose=af.verbose)
-    file_to_read = af.convertedfile
-
-print file_to_read
-
-
-#Extract Raw Audio from Wav File
-(rate, data) = read(file_to_read)
+data = af.render().data
 data = (data[:,0] + data[:,1]) / 2
 print type(data)
-
+"""
 for i in range(len(tats_range)):
     d = data[tats_range[i][0]:tats_range[i][1]]
     print np.amin(d), np.amax(d)
@@ -47,7 +34,18 @@ for i in range(len(tats_range)):
         plt.plot([tats[i].start, tats[i].start + tats[i].duration], [np.amin(d), np.amax(d)], linewidth=0.5, color='b')
     else:
         plt.plot([tats[i].start, tats[i].start + tats[i].duration], [np.amax(d), np.amin(d)], linewidth=0.5, color='b')
+"""
 
+for tat in tats:
+    beginning = int(tat.start *44100)
+    end = int((tat.start + tat.duration) * 44100)
+    data = data[beginning:end]
+    if tat.absolute_context()[0] % 2 == 0:
+        plt.plot([tats.start, tats.start + tats.duration], [np.amin(data), np.amax(data)], linewidth=0.5, color='b')
+    else:
+        plt.plot([tats.start, tats.start + tats.duration], [np.amax(data), np.amin(data)], linewidth=0.5, color='b')
+
+# for i in range(len(tats_range)):
 
 
 plt.plot(data[:44100])
