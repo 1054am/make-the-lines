@@ -52,8 +52,8 @@ for i in range(len(tats_range)):
 
 
 
-#plt.plot(data[:44100])
-#plt.plot([100000,100000], [-5000,5000], linewidth=2.0)
+plt.plot(data[:44100])
+plt.plot([100000,100000], [-5000,5000], linewidth=2.0)
 
 plt.show()
 #signal = np.fromstring(signal, 'Int16')
