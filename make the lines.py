@@ -8,6 +8,7 @@ from scipy.io.wavfile import read
 import sys
 
 # test comment
+# jalkdasfjksdlfj;asdfjsf
 
 filename = "lest2.mp3"
 af = audio.LocalAudioFile(filename)
