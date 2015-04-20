@@ -1,0 +1,66 @@
+import tempfile
+import echonest.remix.audio as audio
+from echonest.remix.support.ffmpeg import ffmpeg
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import wave
+from scipy.io.wavfile import read
+import sys
+import random as r
+import aqplayer
+import threading
+import time
+
+
+filename = "lest.mp3"
+af = audio.LocalAudioFile(filename)
+tats = af.analysis.tatums
+sects = af.analysis.sections
+bars = af.analysis.bars
+beats = af.analysis.beats
+audio_data = af.render().data
+audio_data = (audio_data[:,0] + audio_data[:,1]) / 2
+print type(audio_data)
+
+
+
+for sect in sects:
+    plt.plot([sect.start, sect.start], [-10000, 10000], linewidth=2, color='r')
+
+for beat in beats:
+    plt.plot([beat.start, beat.start], [-2500, 2500], linewidth=2, color='g')
+for bar in bars:
+    plt.plot([bar.start, bar.start], [-5000, 5000], linewidth=2, color='black')
+for tat in tats:
+    beginning = int(tat.start *44100)
+    end = int((tat.start + tat.duration) * 44100)
+    data = audio_data[beginning:end]
+    if tat.absolute_context()[0] % 2 == 0:
+        plt.plot([tat.start, tat.start + tat.duration], [r.uniform(0.75, 1.0) * np.amin(data), r.uniform(0.75, 1.0) * np.amax(data)], linewidth=.75, color='b')
+    else:
+        plt.plot([tat.start, tat.start + tat.duration], [r.uniform(0.75, 1.0) * np.amax(data), r.uniform(0.75, 1.0) * np.amin(data)], linewidth=.75, color='b')
+plt.show(block = False)
+
+
+if 2:
+    time.sleep(1)
+
+    player = aqplayer.Player(af)
+    for beat in beats:
+
+        player.play(beat)
+
+        #plt.show()
+    player.close()
+
+
+#plt.xlim([0,15])
+#plt.ylim([-15000,15000])
+
+
+
+#plt.show()
+#player = aqplayer2.Player()
+#player.play(beats)
+
