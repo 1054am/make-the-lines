@@ -42,9 +42,12 @@ for tat in tats:
         plt.plot([tat.start, tat.start + tat.duration], [r.uniform(0.75, 1.0) * np.amax(data), r.uniform(0.75, 1.0) * np.amin(data)], linewidth=.75, color='b')
 plt.show(block = False)
 
+if 1:
+    time.sleep(0.5)
+    plt.show(block = False)
 
 if 2:
-    time.sleep(1)
+    time.sleep(0.5)
 
     player = aqplayer.Player(af)
     for beat in beats:
@@ -53,6 +56,7 @@ if 2:
 
         #plt.show()
     player.close()
+    plt.show()
 
 
 #plt.xlim([0,15])
